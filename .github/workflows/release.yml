@@ -1,0 +1,35 @@
+name: 'release'
+
+on:
+  push:
+    tags:
+      - '**'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: 'ubuntu-latest'
+    permissions:
+          contents: write
+
+    steps:
+      - name: 'Checkout the repo'
+        uses: actions/checkout@v3.4.0
+        with:
+          fetch-depth: 0
+
+      - name: 'Generating changelog'
+        shell: pwsh
+        run: |
+          $currentTag = git describe --abbrev=0 --tags HEAD
+          $previousTag = git describe --abbrev=0 --tags HEAD^
+          '## Commits' > changelog.md
+          git log --no-merges --format=format:"- %s %h" "$previousTag..$currentTag" >> changelog.md
+
+      - name: 'Create GitHub release'
+        uses: ncipollo/release-action@v1
+        with:
+          bodyFile: 'changelog.md'
+          artifacts: 'README.md'
