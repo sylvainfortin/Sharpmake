@@ -1,0 +1,33 @@
+name: 'release'
+
+on:
+  push:
+    tags:
+      - '**'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      # - name: Checkout the repo
+      #   uses: actions/checkout@v3.3.0
+      #   with:
+      #     fetch-depth: 0
+
+      - name: "Build & test"
+        run: |
+          echo "done!"
+
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          # automatic_release_tag: '0.25.1'
+          prerelease: false
+          draft: true
+          files: |
+            LICENSE.md
+            README.md
