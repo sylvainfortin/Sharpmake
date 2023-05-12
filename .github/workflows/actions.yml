@@ -239,9 +239,31 @@ jobs:
         run: |
           .\RunSample.ps1 -sampleName "vcpkg" -configuration ${{ matrix.configuration }} -framework ${{ matrix.framework }} -os ${{ matrix.os }} -vsVersionSuffix ${env:VS_VERSION_SUFFIX}
 
-      - name: Store MSBuild binary logs
-        if: ${{ failure() && runner.os == 'Windows' }}
+      - name: Find untracked files
+        id: ls-untracked
+        # if: ${{ failure() }}
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        # upload-artifact takes the least common ancestor as the root directory.
+        # This means the relative path in the job artifact can differ from the repository.
+        # To work around this, we add untracked_files.txt that is created at the root of the repository.
+        # Forcing upload-artifact to use the root of the repository as the common ancestor.
+        #
+        # EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        # echo "untracked_files<<$EOF" >> "$GITHUB_OUTPUT"
+        # cat untracked_files.txt >> "$GITHUB_OUTPUT"
+        # echo "$EOF" >> "$GITHUB_OUTPUT"
+        run: |
+          git ls-files samples --ignored --exclude-standard --others > untracked_files.txt
+          echo untracked_files.txt >> untracked_files.txt
+          $EOF = [Convert]::ToBase64String((Get-Random -InputObject (0..255) -Count 15 | ForEach-Object { [byte]$_ }))
+          echo "untracked_files<<$EOF" >> "$env:GITHUB_OUTPUT"
+          cat untracked_files.txt >> "$env:GITHUB_OUTPUT"
+          echo $EOF >> "$env:GITHUB_OUTPUT"
+
+      - name: Upload untracked files
+        # if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
-          name: sharpmake-samples-msbuild-logs-${{ matrix.framework }}-${{ runner.os }}-${{ github.sha }}-${{ matrix.configuration }}
-          path: samples/**/*.binlog
+          name: sharpmake-samples-${{ matrix.framework }}-${{ runner.os }}-${{ github.sha }}-${{ matrix.configuration }}
+          path: ${{ steps.ls-untracked.outputs.untracked_files }}
