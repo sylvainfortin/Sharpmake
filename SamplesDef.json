@@ -180,6 +180,7 @@
             "TestFolder": "samples/HelloClangCl",
             "Commands":
             [
+                "dir 'C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/lib/clang'",
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloClangCl.Main.sharpmake.cs\" -framework {framework} -devenvVersion {VsVersionSuffix}",
                 "./Compile.ps1 -slnOrPrjFile \"HelloClangCl_win64_{VsVersionSuffix}.sln\" -configuration \"ClangCl {configuration}\" -platform \"MSBuild\" -WorkingDirectory \"{testFolder}/codebase/temp/solutions\" -VsVersion {os} -compiler MsBuild",
                 "&'./{testFolder}/codebase/temp/bin/win64_clangcl_{configuration}_msbuild/exe.exe'",
