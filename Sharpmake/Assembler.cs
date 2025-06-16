@@ -14,10 +14,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
-#if NET5_0
-using BasicReferenceAssemblies = Basic.Reference.Assemblies.Net50;
-#elif NET6_0
+#if NET6_0
 using BasicReferenceAssemblies = Basic.Reference.Assemblies.Net60;
+#elif NET8_0
+using BasicReferenceAssemblies = Basic.Reference.Assemblies.Net80;
 #else
 #error unhandled framework version
 #endif
@@ -26,11 +26,11 @@ namespace Sharpmake
 {
     public class Assembler
     {
-        public const Options.CSharp.LanguageVersion SharpmakeScriptsCSharpVersion = Options.CSharp.LanguageVersion.CSharp10;
-#if NET5_0
-        public const DotNetFramework SharpmakeDotNetFramework = DotNetFramework.net5_0;
-#elif NET6_0
+        public const Options.CSharp.LanguageVersion SharpmakeScriptsCSharpVersion = Options.CSharp.LanguageVersion.CSharp12;
+#if NET6_0
         public const DotNetFramework SharpmakeDotNetFramework = DotNetFramework.net6_0;
+#elif NET8_0
+        public const DotNetFramework SharpmakeDotNetFramework = DotNetFramework.net8_0;
 #else
 #error unhandled framework version
 #endif
@@ -795,6 +795,10 @@ namespace Sharpmake
                     return LanguageVersion.CSharp9;
                 case Options.CSharp.LanguageVersion.CSharp10:
                     return LanguageVersion.CSharp10;
+                case Options.CSharp.LanguageVersion.CSharp11:
+                    return LanguageVersion.CSharp11;
+                case Options.CSharp.LanguageVersion.CSharp12:
+                    return LanguageVersion.CSharp12;
                 default:
                     throw new NotImplementedException($"Don't know how to convert sharpmake option {languageVersion} to language version");
             }
