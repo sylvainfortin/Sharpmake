@@ -45,16 +45,10 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
         run: git checkout -b ${{ github.ref_name }}
 
-      - name: Setup .NET 8 SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
       - name: Build Sharpmake ${{ inputs.configuration }} ${{ inputs.os }}
         shell: pwsh
         run: |
           dotnet build "Sharpmake.sln" -c "${{ inputs.configuration }}" -bl:Sharpmake_${{ inputs.configuration }}.binlog
-          ./Sharpmake.Application/bin/${{ inputs.configuration }}/net8.0/Sharpmake.Application
 
       - name: Store MSBuild binary logs
         if: always()
@@ -77,4 +71,3 @@ jobs:
         with:
           name: 'Sharpmake-${{ inputs.framework }}-${{ runner.os }}-${{ github.sha }}'
           path: Sharpmake.Application/bin/Release/${{ inputs.framework }}
-      
